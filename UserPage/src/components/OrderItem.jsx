@@ -11,11 +11,11 @@ const OrderItem = ({ order, index }) => {
           </div>
         ))}
       </td>
+      <td className="invert">{order.shippingMethod.name}</td>
 
       <td className="invert">
         {order.orderTotal + order.shippingMethod.price}
       </td>
-      <td className="invert">{order.shippingMethod.name}</td>
       <td className="invert">{order.status}</td>
     </tr>
   );

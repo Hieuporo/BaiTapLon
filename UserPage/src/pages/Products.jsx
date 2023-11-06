@@ -2,15 +2,18 @@ import { useEffect, useState } from "react";
 import PriceRange from "../components/PriceRange";
 import ProductItem from "../components/ProductItem";
 import axios from "axios";
+import { Grid } from "@material-ui/core";
 
 const Products = () => {
   const [products, setProducts] = useState([]);
-
+  const [search, setSearch] = useState("");
   const getProducts = async () => {
     try {
-      const { data } = await axios.get("https://localhost:7020/api/Product");
-      const productItems = data.flatMap((product) => product.productItems);
-      setProducts(productItems);
+      const { data } = await axios.get(
+        `https://localhost:7020/api/Product?Page=1&PageSize=6&SearchTerm=${search}
+        `
+      );
+      setProducts(data.items);
     } catch (error) {
       console.log(error);
     }
@@ -28,7 +31,7 @@ const Products = () => {
           <div className="inner_breadcrumb_agileits_w3">
             <ul className="short">
               <li>
-                <a href="index.html">Home</a>
+                <a>Home</a>
                 <i>|</i>
               </li>
               <li>Shop</li>
@@ -41,7 +44,36 @@ const Products = () => {
       {/* top Products */}
       <div className="ads-grid_shop ">
         <div className="shop_inner_inf">
-          <div>
+          <div className="side-bar col-md-3">
+            <div className="search-hotel">
+              <h3 className="agileits-sear-head">Search Here..</h3>
+              <input
+                type="search"
+                placeholder="Product name..."
+                name="search"
+                className="input-search"
+                required=""
+                onChange={(e) => setSearch(e.target.value)}
+              />
+              <button
+                style={{
+                  backgroundColor: "#87CEFA",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: "4px",
+                  padding: "8px 16px",
+                  cursor: "pointer",
+                  width: "100%",
+                  marginTop: "10px",
+                  fontSize: "18px",
+                }}
+                onClick={getProducts}
+              >
+                Search
+              </button>
+            </div>
+          </div>
+          <div className="left-ads-display col-md-9">
             <div className="wrapper_top_shop">
               <div className="col-md-6 shop_left">
                 <img src="./src/images/banner3.jpg" alt="" />
@@ -53,15 +85,14 @@ const Products = () => {
               </div>
               <div className="clearfix" />
               {/* product-sec1 */}
-              <div className="product-sec1">
-                {/*/mens*/}
-                {products &&
-                  products.map((product, i) => (
-                    <div key={i}>
-                      <ProductItem product={product} />
-                    </div>
-                  ))}
-              </div>
+
+              <Grid container spacing={3}>
+                {products.map((product) => (
+                  <Grid xs={12} md={6} lg={4} key={product.id}>
+                    <ProductItem product={product} />
+                  </Grid>
+                ))}
+              </Grid>
               {/* //product-sec1 */}
               <div className="col-md-12 shop_left shp">
                 <h6>21% off</h6>

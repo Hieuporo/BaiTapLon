@@ -10,8 +10,9 @@ import Rating from "@mui/material/Rating";
 import ReviewItem from "../components/ReviewItem";
 
 const Product = () => {
-  const { id } = useParams();
+  const { id, subId } = useParams();
   const [product, setProduct] = useState();
+  const [productItem, setProductItem] = useState();
   const [quantity, setQuantity] = useState(1);
   const { fetchCart, setFetchCart } = useAppContext();
 
@@ -25,8 +26,14 @@ const Product = () => {
   const getProductById = async () => {
     try {
       const { data } = await axios.get(
-        `https://localhost:7020/api/Product/productitem/${id}`
+        `https://localhost:7020/api/Product/${id}`
       );
+
+      var currentProductItem = data.productItems.find((p) => {
+        return p.id == subId;
+      });
+
+      setProductItem(currentProductItem);
       setProduct(data);
     } catch (error) {
       console.log(error);
@@ -49,7 +56,7 @@ const Product = () => {
         "https://localhost:7020/api/Cart",
         {
           cartId: cardId,
-          productItemId: product.id,
+          productItemId: productItem.id,
           quantity: quantity,
         },
         {
@@ -68,8 +75,9 @@ const Product = () => {
 
   useEffect(() => {
     getProductById();
+    setQuantity(1);
     window.scrollTo(0, 0);
-  }, [id]);
+  }, [id, subId]);
 
   if (product) {
     return (
@@ -98,7 +106,7 @@ const Product = () => {
                       <div className="thumb-image">
                         {" "}
                         <img
-                          src={product.imageUrl}
+                          src={productItem.imageUrl}
                           data-imagezoom="true"
                           className="img-product"
                         />{" "}
@@ -113,16 +121,37 @@ const Product = () => {
               className="col-md-6 single-right-left simpleCart_shelfItem"
               style={{ marginTop: "70px" }}
             >
-              <h3>{product.name}</h3>
+              <h3>{productItem.name}</h3>
               <p>
-                <span className="item_price">{product.price} $</span>
+                <span className="item_price">{productItem.price} $</span>
               </p>
+
+              <div>
+                {product.productItems.map((p) => {
+                  if (p.id == subId) {
+                    return (
+                      <Link to={`/product/${product.id}/${p.id}`}>
+                        <img src={p.imageUrl} class="image-square active"></img>
+                      </Link>
+                    );
+                  }
+                  return (
+                    <Link to={`/product/${product.id}/${p.id}`}>
+                      <img src={p.imageUrl} class="image-square"></img>
+                    </Link>
+                  );
+                })}
+              </div>
 
               <div className="color-quality">
                 <div className="d-flex pt-4 align-items-center">
                   <h5
                     className="mr-3"
-                    style={{ marginRight: "12px", fontSize: "16px" }}
+                    style={{
+                      marginRight: "12px",
+                      fontSize: "16px",
+                      marginTop: "62px",
+                    }}
                   >
                     Quantity
                   </h5>

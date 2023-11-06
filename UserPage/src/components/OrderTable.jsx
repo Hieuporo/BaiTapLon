@@ -39,8 +39,8 @@ const OrderTable = () => {
           <tr>
             <th>SL No.</th>
             <th>Product</th>
-            <th>Price</th>
-            <th>Shipping</th>
+            <th>Shipping Method</th>
+            <th>Total ( Include Shipping Cost )</th>
             <th>Status</th>
           </tr>
         </thead>
